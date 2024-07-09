@@ -1,8 +1,7 @@
 // Filename: index.js
 // Combined code from all files
-
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, Button, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, Button, ScrollView, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
@@ -78,64 +77,66 @@ export default function App() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Congratulatory Message Generator</Text>
-            
-            <Picker
-                selectedValue={recipient}
-                onValueChange={(itemValue) => setRecipient(itemValue)}
-                style={styles.picker}
-            >
-                {recipients.map((item, index) => (
-                    <Picker.Item key={index} label={item} value={item} />
-                ))}
-            </Picker>
-            {recipient === "Custom" &&
-                <TextInput
-                    style={styles.input}
-                    placeholder="Custom Recipient Name"
-                    value={customRecipient}
-                    onChangeText={setCustomRecipient}
-                />
-            }
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <Text style={styles.title}>Congratulatory Message Generator</Text>
+                
+                <Picker
+                    selectedValue={recipient}
+                    onValueChange={(itemValue) => setRecipient(itemValue)}
+                    style={styles.picker}
+                >
+                    {recipients.map((item, index) => (
+                        <Picker.Item key={index} label={item} value={item} />
+                    ))}
+                </Picker>
+                {recipient === "Custom" &&
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Custom Recipient Name"
+                        value={customRecipient}
+                        onChangeText={setCustomRecipient}
+                    />
+                }
 
-            <Picker
-                selectedValue={occasion}
-                onValueChange={(itemValue) => setOccasion(itemValue)}
-                style={styles.picker}
-            >
-                {occasions.map((item, index) => (
-                    <Picker.Item key={index} label={item} value={item} />
-                ))}
-            </Picker>
-            {occasion === "Custom" &&
-                <TextInput
-                    style={styles.input}
-                    placeholder="Custom Occasion"
-                    value={customOccasion}
-                    onChangeText={setCustomOccasion}
-                />
-            }
+                <Picker
+                    selectedValue={occasion}
+                    onValueChange={(itemValue) => setOccasion(itemValue)}
+                    style={styles.picker}
+                >
+                    {occasions.map((item, index) => (
+                        <Picker.Item key={index} label={item} value={item} />
+                    ))}
+                </Picker>
+                {occasion === "Custom" &&
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Custom Occasion"
+                        value={customOccasion}
+                        onChangeText={setCustomOccasion}
+                    />
+                }
 
-            <Picker
-                selectedValue={style}
-                onValueChange={(itemValue) => setStyle(itemValue)}
-                style={styles.picker}
-            >
-                {styles.map((item, index) => (
-                    <Picker.Item key={index} label={item} value={item} />
-                ))}
-            </Picker>
-            {style === "Custom" &&
-                <TextInput
-                    style={styles.input}
-                    placeholder="Custom Style"
-                    value={customStyle}
-                    onChangeText={setCustomStyle}
-                />
-            }
+                <Picker
+                    selectedValue={style}
+                    onValueChange={(itemValue) => setStyle(itemValue)}
+                    style={styles.picker}
+                >
+                    {styles.map((item, index) => (
+                        <Picker.Item key={index} label={item} value={item} />
+                    ))}
+                </Picker>
+                {style === "Custom" &&
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Custom Style"
+                        value={customStyle}
+                        onChangeText={setCustomStyle}
+                    />
+                }
 
-            <Button title="Generate Message" onPress={generateMessage} disabled={loading} />
-            {loading ? <Text>Loading...</Text> : message ? <Text style={styles.message}>{message}</Text> : null}
+                <Button title="Generate Message" onPress={generateMessage} disabled={loading} />
+                {loading ? <Text>Loading...</Text> : message ? <Text style={styles.message}>{message}</Text> : null}
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -143,9 +144,11 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 20,
-        paddingHorizontal: 16,
         backgroundColor: '#fff',
+    },
+    scrollContainer: {
+        padding: 20,
+        paddingTop: 16,
     },
     title: {
         fontSize: 24,
