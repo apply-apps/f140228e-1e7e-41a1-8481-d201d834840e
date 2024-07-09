@@ -18,9 +18,33 @@ function HomeScreen({ navigation }) {
     const [customOccasion, setCustomOccasion] = useState('');
     const [customStyle, setCustomStyle] = useState('');
 
-    const recipients = ["Father", "Mother", "Boss", "Brother", "Sister", "Friend", "Custom"];
-    const occasions = ["Birthday", "Christmas", "New Year", "Graduation", "Wedding", "Custom"];
-    const stylesList = ["Formal", "Funny", "Heartfelt", "Casual", "Inspirational", "Custom"];
+    const recipients = [
+        "Father",
+        "Mother",
+        "Boss",
+        "Brother",
+        "Sister",
+        "Friend",
+        "Custom"
+    ];
+
+    const occasions = [
+        "Birthday",
+        "Christmas",
+        "New Year",
+        "Graduation",
+        "Wedding",
+        "Custom"
+    ];
+
+    const styles = [
+        "Formal",
+        "Funny",
+        "Heartfelt",
+        "Casual",
+        "Inspirational",
+        "Custom"
+    ];
 
     const handleGeneratePress = () => {
         let finalRecipient = recipient === "Custom" ? customRecipient : recipient;
@@ -32,40 +56,123 @@ function HomeScreen({ navigation }) {
             return;
         }
 
-        navigation.navigate('Result', { recipient: finalRecipient, occasion: finalOccasion, style: finalStyle });
+        navigation.navigate('Result', {
+            recipient: finalRecipient,
+            occasion: finalOccasion,
+            style: finalStyle
+        });
     };
 
     return (
-        <SafeAreaView style={stylesContainer.container}>
-            <ScrollView contentContainerStyle={stylesContainer.scrollContainer}>
-                <Text style={stylesContainer.title}>Congratulatory Message Generator</Text>
+        <SafeAreaView style={homeScreenStyles.container}>
+            <ScrollView contentContainerStyle={homeScreenStyles.scrollContainer}>
+                <Text style={homeScreenStyles.title}>Congratulatory Message Generator</Text>
                 
-                <Picker selectedValue={recipient} onValueChange={(itemValue) => setRecipient(itemValue)} style={stylesContainer.picker}>
-                    {recipients.map((item, index) => (
-                        <Picker.Item key={index} label={item} value={item} />
-                    ))}
-                </Picker>
-                {recipient === "Custom" && <TextInput style={stylesContainer.input} placeholder="Custom Recipient Name" value={customRecipient} onChangeText={setCustomRecipient} />}
+                <View style={homeScreenStyles.pickerContainer}>
+                    <Text style={homeScreenStyles.label}>Recipient:</Text>
+                    <Picker
+                        selectedValue={recipient}
+                        onValueChange={(itemValue) => setRecipient(itemValue)}
+                        style={homeScreenStyles.picker}
+                    >
+                        {recipients.map((item, index) => (
+                            <Picker.Item key={index} label={item} value={item} />
+                        ))}
+                    </Picker>
+                    {recipient === "Custom" &&
+                        <TextInput
+                            style={homeScreenStyles.input}
+                            placeholder="Custom Recipient Name"
+                            value={customRecipient}
+                            onChangeText={setCustomRecipient}
+                        />
+                    }
+                </View>
 
-                <Picker selectedValue={occasion} onValueChange={(itemValue) => setOccasion(itemValue)} style={stylesContainer.picker}>
-                    {occasions.map((item, index) => (
-                        <Picker.Item key={index} label={item} value={item} />
-                    ))}
-                </Picker>
-                {occasion === "Custom" && <TextInput style={stylesContainer.input} placeholder="Custom Occasion" value={customOccasion} onChangeText={setCustomOccasion} />}
+                <View style={homeScreenStyles.pickerContainer}>
+                    <Text style={homeScreenStyles.label}>Occasion:</Text>
+                    <Picker
+                        selectedValue={occasion}
+                        onValueChange={(itemValue) => setOccasion(itemValue)}
+                        style={homeScreenStyles.picker}
+                    >
+                        {occasions.map((item, index) => (
+                            <Picker.Item key={index} label={item} value={item} />
+                        ))}
+                    </Picker>
+                    {occasion === "Custom" &&
+                        <TextInput
+                            style={homeScreenStyles.input}
+                            placeholder="Custom Occasion"
+                            value={customOccasion}
+                            onChangeText={setCustomOccasion}
+                        />
+                    }
+                </View>
 
-                <Picker selectedValue={style} onValueChange={(itemValue) => setStyle(itemValue)} style={stylesContainer.picker}>
-                    {stylesList.map((item, index) => (
-                        <Picker.Item key={index} label={item} value={item} />
-                    ))}
-                </Picker>
-                {style === "Custom" && <TextInput style={stylesContainer.input} placeholder="Custom Style" value={customStyle} onChangeText={setCustomStyle} />}
+                <View style={homeScreenStyles.pickerContainer}>
+                    <Text style={homeScreenStyles.label}>Style:</Text>
+                    <Picker
+                        selectedValue={style}
+                        onValueChange={(itemValue) => setStyle(itemValue)}
+                        style={homeScreenStyles.picker}
+                    >
+                        {styles.map((item, index) => (
+                            <Picker.Item key={index} label={item} value={item} />
+                        ))}
+                    </Picker>
+                    {style === "Custom" &&
+                        <TextInput
+                            style={homeScreenStyles.input}
+                            placeholder="Custom Style"
+                            value={customStyle}
+                            onChangeText={setCustomStyle}
+                        />
+                    }
+                </View>
 
                 <Button title="Generate Message" onPress={handleGeneratePress} />
             </ScrollView>
         </SafeAreaView>
     );
 }
+
+const homeScreenStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    scrollContainer: {
+        padding: 20,
+        paddingTop: 16,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 16,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    input: {
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 12,
+        marginBottom: 16,
+        marginTop: 8,
+    },
+    picker: {
+        height: 50,
+        width: '100%',
+        marginBottom: 16,
+    },
+    pickerContainer: {
+        marginBottom: 16,
+    },
+});
 
 function ResultScreen({ route }) {
     const { recipient, occasion, style } = route.params;
@@ -98,21 +205,28 @@ function ResultScreen({ route }) {
     }, [recipient, occasion, style]);
 
     return (
-        <SafeAreaView style={stylesContainer.container}>
-            <ScrollView contentContainerStyle={stylesContainer.scrollContainer}>
-                {loading ? <Text>Loading...</Text> : <Text style={stylesContainer.message}>{message}</Text>}
+        <SafeAreaView style={resultScreenStyles.container}>
+            <ScrollView contentContainerStyle={resultScreenStyles.scrollContainer}>
+                {loading ? <Text>Loading...</Text> : <Text style={resultScreenStyles.message}>{message}</Text>}
             </ScrollView>
         </SafeAreaView>
     );
 }
 
-const stylesContainer = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff' },
-    scrollContainer: { padding: 20, paddingTop: 16 },
-    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
-    input: { borderColor: '#ccc', borderWidth: 1, borderRadius: 8, padding: 12, marginBottom: 16 },
-    picker: { height: 50, width: '100%', marginBottom: 16 },
-    message: { marginTop: 20, fontSize: 16, fontStyle: 'italic' },
+const resultScreenStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    scrollContainer: {
+        padding: 20,
+        paddingTop: 16,
+    },
+    message: {
+        marginTop: 20,
+        fontSize: 16,
+        fontStyle: 'italic',
+    },
 });
 
 export default function App() {
