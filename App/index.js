@@ -1,18 +1,55 @@
 // Filename: index.js
 // Combined code from all files
+
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, Button } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, Button, View } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
 export default function App() {
     const [recipient, setRecipient] = useState('');
     const [occasion, setOccasion] = useState('');
     const [style, setStyle] = useState('');
+    const [customRecipient, setCustomRecipient] = useState('');
+    const [customOccasion, setCustomOccasion] = useState('');
+    const [customStyle, setCustomStyle] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const recipients = [
+        "Father",
+        "Mother",
+        "Boss",
+        "Brother",
+        "Sister",
+        "Friend",
+        "Custom"
+    ];
+
+    const occasions = [
+        "Birthday",
+        "Christmas",
+        "New Year",
+        "Graduation",
+        "Wedding",
+        "Custom"
+    ];
+
+    const styles = [
+        "Formal",
+        "Funny",
+        "Heartfelt",
+        "Casual",
+        "Inspirational",
+        "Custom"
+    ];
+
     const generateMessage = async () => {
-        if (!recipient || !occasion || !style) {
+        let finalRecipient = recipient === "Custom" ? customRecipient : recipient;
+        let finalOccasion = occasion === "Custom" ? customOccasion : occasion;
+        let finalStyle = style === "Custom" ? customStyle : style;
+        
+        if (!finalRecipient || !finalOccasion || !finalStyle) {
             alert('Please fill all fields');
             return;
         }
@@ -23,7 +60,7 @@ export default function App() {
             const response = await axios.post('http://dev.192.168.1.107.nip.io:3300/chatgpt', {
                 messages: [
                     { role: 'system', content: 'You are a helpful assistant. Please provide answers for given requests.' },
-                    { role: 'user', content: `Create a congratulatory message for ${recipient} on the occasion of ${occasion} in a ${style} style.` },
+                    { role: 'user', content: `Create a congratulatory message for ${finalRecipient} on the occasion of ${finalOccasion} in a ${finalStyle} style.` },
                 ],
                 model: 'gpt-4o',
             });
@@ -42,24 +79,61 @@ export default function App() {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Congratulatory Message Generator</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Recipient Name"
-                value={recipient}
-                onChangeText={setRecipient}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Occasion (e.g., Birthday, Christmas)"
-                value={occasion}
-                onChangeText={setOccasion}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Style (e.g., Formal, Funny)"
-                value={style}
-                onChangeText={setStyle}
-            />
+            
+            <Picker
+                selectedValue={recipient}
+                onValueChange={(itemValue) => setRecipient(itemValue)}
+                style={styles.picker}
+            >
+                {recipients.map((item, index) => (
+                    <Picker.Item key={index} label={item} value={item} />
+                ))}
+            </Picker>
+            {recipient === "Custom" &&
+                <TextInput
+                    style={styles.input}
+                    placeholder="Custom Recipient Name"
+                    value={customRecipient}
+                    onChangeText={setCustomRecipient}
+                />
+            }
+
+            <Picker
+                selectedValue={occasion}
+                onValueChange={(itemValue) => setOccasion(itemValue)}
+                style={styles.picker}
+            >
+                {occasions.map((item, index) => (
+                    <Picker.Item key={index} label={item} value={item} />
+                ))}
+            </Picker>
+            {occasion === "Custom" &&
+                <TextInput
+                    style={styles.input}
+                    placeholder="Custom Occasion"
+                    value={customOccasion}
+                    onChangeText={setCustomOccasion}
+                />
+            }
+
+            <Picker
+                selectedValue={style}
+                onValueChange={(itemValue) => setStyle(itemValue)}
+                style={styles.picker}
+            >
+                {styles.map((item, index) => (
+                    <Picker.Item key={index} label={item} value={item} />
+                ))}
+            </Picker>
+            {style === "Custom" &&
+                <TextInput
+                    style={styles.input}
+                    placeholder="Custom Style"
+                    value={customStyle}
+                    onChangeText={setCustomStyle}
+                />
+            }
+
             <Button title="Generate Message" onPress={generateMessage} disabled={loading} />
             {loading ? <Text>Loading...</Text> : message ? <Text style={styles.message}>{message}</Text> : null}
         </SafeAreaView>
@@ -83,6 +157,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 8,
         padding: 12,
+        marginBottom: 16,
+    },
+    picker: {
+        height: 50,
+        width: '100%',
         marginBottom: 16,
     },
     message: {
